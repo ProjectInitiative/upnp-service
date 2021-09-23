@@ -1,0 +1,10 @@
+version: 3.9'
+services:
+  upnp:
+    container_name: projectinitiative/upnp-server
+    restart: always
+    network_mode: host  # works while the container runs
+    build:
+      context: .
+      network: host  # works during the build if needed
+    
