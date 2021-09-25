@@ -15,16 +15,22 @@ The config JSON lives in `/etc/upnp-server/upnp.json`. This file will need to be
     [
         {
             "app_name": "app1",
-            "port": "80",
-            "protocols": ["TCP,UDP"]
+            "redirections": [
+                ["801", "TCP"],
+                ["80801","80801","TCP"],
+                ["80801","80801","UDP"]
+            ]
         },
         {
             "app_name": "app2",
-            "port": "8080",
-            "protocols": ["UDP"]
+            "redirections": [
+                ["4333","TCP"],
+                ["4332","4334","TCP"]
+            ]
         }
     ]
 }
+
 ```
 
 ## Building from Source
