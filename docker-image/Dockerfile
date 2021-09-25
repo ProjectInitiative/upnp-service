@@ -3,15 +3,14 @@ FROM alpine:latest
 RUN apk update
 RUN apk add --no-cache bash jq miniupnpc
 
-RUN mkdir /scripts
-WORKDIR /scripts
-COPY update_upnp .
-RUN chmod a+x ./update_upnp
+# create default settings file
+RUN mkdir -p /etc/upnp-server
+COPY upnp.json /etc/upnp-server
 
-# cron to update each UPnP entries every 10 minutes
-RUN echo -e "*/10\t*\t*\t*\t*\tbash /scripts/update_upnp 8080 TCP" >> /etc/crontabs/root
 
-CMD ["crond", "-f"]
+COPY entrypoint /usr/local/bin
+COPY update_upnp /usr/local/bin
+RUN chmod a+x /usr/local/bin/entrypoint
+RUN chmod a+x /usr/local/bin/update_upnp
 
-# on start, open needed ports
-ENTRYPOINT bash update_upnp 80 TCP && bash update_upnp 8080 TCP
+ENTRYPOINT [ "entrypoint" ]

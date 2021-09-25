@@ -1,0 +1,140 @@
+#!/usr/bin/env bash
+
+# check if programs are installed
+REQ_PROGRAMS=("dirname" "basename" "readlink" "bash" "jq")
+declare -a MISSING_PROGS
+for prog in ${REQ_PROGRAMS[@]}
+do
+    if ! [ -x "$(command -v $prog)" ]; then 
+        MISSING_PROGS+=($prog)
+    fi
+done
+if [ ${#MISSING_PROGS} -ne 0 ]; then # check if array is not empty
+    # enumerates arr elements with delimiter
+    PRINT_MISSING_PROGS=$(printf "%s," \""${MISSING_PROGS[@]}"\" | cut -d "," -f 1-${#MISSING_PROGS[@]})
+    printf '%b\n' "err: $PRINT_MISSING_PROGS missing from system or path\nPlease install the required programs on your system" >&2
+    exit 1
+fi
+
+SDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )" # absolute path of the script
+
+show_help()
+{
+cat << EOF
+Usage: Usage: $SCRIPT_NAME [-q|--config [CONFIG-FILE]] [-j|--json [JSON]] [-c|--crontab [CRONTAB]]
+Gerneral DevOps utility script to help version, push and test code on the pipeline
+     ?|-?|-h|--help                     Display this help and exit
+    -q|--config     [CONFIG-FILE]       Path to custom config file
+    -j|--json       [JSON]              JSON string representation of configuration settings
+    -c|--crontab    [CRONTAB]           Crontab schedule string
+EOF
+}
+
+get_full_path()
+{
+    printf '%s' $(cd "$( dirname "$1" )"; pwd -P)/$( basename "$1")
+}
+
+print_missing_arg()
+{
+    printf '%s\n' "err: Argument for $1 is missing" >&2
+}
+MASTER_CONFIG_DIR="/etc/upnp-server"
+MASTER_CONFIG="$MASTER_CONFIG_DIR/upnp.json"
+CONFIG="$MASTER_CONFIG"
+JSON="$(<$MASTER_CONFIG)"
+CRONTAB="*/10 * * * *"
+
+set_json_config()
+{
+    printf '%s\n' "$JSON" | jq . > "$MASTER_CONFIG"
+}
+
+parse_json_config()
+{
+    if jq -e . >/dev/null 2>&1 <<<"$JSON"; then
+        mkdir -p "$MASTER_CONFIG_DIR"
+        printf '%s\n' "$JSON" | jq . > "$MASTER_CONFIG"
+    else
+        printf '%s\n' "Failed to parse JSON, or got false/null"
+        exit 1
+    fi
+}
+
+# parse parameters
+PARAMS=""
+while (( "$#" )); do
+    case "$1" in
+        \?|-\?|-h|--help)
+            show_help
+            exit 0
+            ;;
+        -V|--version)
+            show_version
+            exit 0
+            ;;
+        -q|--config)
+             # check if flag has argument
+            if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
+                CONFIG="$( get_full_path $2 )"
+                # check if valid path
+                if [ ! -f $CONFIG ]; then
+                    { printf '%s\n' "err: $2 is not a valid file" >&2 && exit 1; }
+                fi
+                # set json to provided config file
+                JSON="$(<$CONFIG)"
+                # check if json is valid and add to system
+                parse_json_config
+                shift 2
+            else
+                print_missing_arg $1
+                exit 1
+            fi
+            ;;
+        -j|--json)
+             # check if flag has argument
+            if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
+                JSON="$2"
+                # check if json is valid and add to system
+                parse_json_config
+                shift 2
+            else
+                print_missing_arg $1
+                exit 1
+            fi
+            ;;
+        -c|--crontab)
+             # check if flag has argument
+            if [ -n "$2" ] && [ ${2:0:1} != "-" ]; then
+                CONFIG="$2"
+                #TODO: add crontab string validation
+                shift 2
+            else
+                print_missing_arg $1
+                exit 1
+            fi
+            ;;
+        -*|--*=) # unsupported flags
+            printf '%s\n' "err: Unsupported flag $1" >&2
+            exit 1
+            ;;
+        *) # preserve positional arguments
+            PARAMS="$PARAMS $1"
+            shift
+            ;;
+    esac
+done
+
+# set remaining positional arguments in place
+eval set -- "$PARAMS"
+[ "${1:-}" = "--" ] && shift # Discard any additional - and -- left over components?
+
+
+# set crontab
+printf '%s\n' "$CRONTAB bash /usr/local/bin/update_upnp" >> /etc/crontabs/root
+
+# run inital update_upnp
+/usr/local/bin/update_upnp
+
+# start crond and keep container alive
+crond -f

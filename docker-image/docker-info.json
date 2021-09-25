@@ -1,0 +1,12 @@
+{
+    "docker_build": [
+        {
+            "img_name": "upnp-server",
+            "file": "Dockerfile",
+            "tags": [],
+            "version": "0.1.0",
+            "docker_registries": [
+            ]
+        }
+    ]
+}

@@ -7,7 +7,32 @@ Add an addional tool to the toolkit of avid homelabbers or individuals who might
 
 ## Usage
 
+The config JSON lives in `/etc/upnp-server/upnp.json`. This file will need to be mounted or edited in the container. Here is a sample of the data required to run properly:
+
+```JSON
+{
+    "apps":
+    [
+        {
+            "app_name": "app1",
+            "port": "80",
+            "protocols": ["TCP,UDP"]
+        },
+        {
+            "app_name": "app2",
+            "port": "8080",
+            "protocols": ["UDP"]
+        }
+    ]
+}
+```
+
 ## Building from Source
+
+```bash
+cd $PROJ_DIR
+docker build -t $TAG -f $PROJ_DIR/docker-image/Dockerfile $PROJ_DIR/docker-image
+```
 
 ## Additional Info
 
