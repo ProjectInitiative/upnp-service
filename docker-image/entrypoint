@@ -39,7 +39,7 @@ print_missing_arg()
 {
     printf '%s\n' "err: Argument for $1 is missing" >&2
 }
-MASTER_CONFIG_DIR="/etc/upnp-server"
+MASTER_CONFIG_DIR="/etc/upnp-service"
 MASTER_CONFIG="$MASTER_CONFIG_DIR/upnp.json"
 CONFIG="$MASTER_CONFIG"
 JSON="$(<$MASTER_CONFIG)"

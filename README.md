@@ -1,4 +1,4 @@
-# UPnP Server
+# UPnP Service
 
 ## Purpose
 
@@ -6,19 +6,19 @@ Add an additional tool to the toolkit of avid homelabbers or individuals who mig
 
 ## Pulling the container
 
-[ghcr](https://github.com/ProjectInitiative/upnp-server/pkgs/container/upnp-server)
+[ghcr](https://github.com/ProjectInitiative/upnp-service/pkgs/container/upnp-service)
 
-[Docker Hub](https://hub.docker.com/repository/docker/projectinitiative/upnp-server)
+[Docker Hub](https://hub.docker.com/repository/docker/projectinitiative/upnp-service)
 
 ```bash
-docker pull projectinitiative/upnp-server:latest
+docker pull projectinitiative/upnp-service:latest
 # OR
-docker pull ghcr.io/projectinitiative/upnp-server:latest
+docker pull ghcr.io/projectinitiative/upnp-service:latest
 ```
 
 ## Usage
 
-The config JSON lives in `/etc/upnp-server/upnp.json`. This file will need to be mounted or edited in the container. Here is a sample of the data required to run properly:
+The config JSON lives in `/etc/upnp-service/upnp.json`. This file will need to be mounted or edited in the container. Here is a sample of the data required to run properly:
 
 ```JSON
 {

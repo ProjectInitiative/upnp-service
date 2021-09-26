@@ -19,7 +19,7 @@ update_upnp()
     printf '%s\n' "Done updating UPnP entry with port redirections [$REDIRECTIONS]"
 }
 
-MASTER_CONFIG_DIR="/etc/upnp-server"
+MASTER_CONFIG_DIR="/etc/upnp-service"
 MASTER_CONFIG="$MASTER_CONFIG_DIR/upnp.json"
 
 

@@ -4,8 +4,8 @@ RUN apk update
 RUN apk add --no-cache bash jq miniupnpc
 
 # create default settings file
-RUN mkdir -p /etc/upnp-server
-COPY upnp.json /etc/upnp-server
+RUN mkdir -p /etc/upnp-service
+COPY upnp.json /etc/upnp-service
 
 
 COPY entrypoint /usr/local/bin
