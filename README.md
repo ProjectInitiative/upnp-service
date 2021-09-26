@@ -57,4 +57,4 @@ docker build -t $TAG -f $PROJ_DIR/docker-image/Dockerfile $PROJ_DIR/docker-image
 
 ## Additional Info
 
-Original credit and inspiration to [ofepk's Stack Overflow answer](https://stackoverflow.com/a/54081861) detailing a basic UPnP server docker container.
+Original credit and inspiration to [ofepk's Stack Overflow answer](https://stackoverflow.com/a/54081861) detailing a basic UPnP service docker container.
