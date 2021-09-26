@@ -18,6 +18,10 @@ docker pull ghcr.io/projectinitiative/upnp-service:latest
 
 ## Usage
 
+All settings for running the container live in the `upnp.json` file (see next section). When running the container, the `host` network needs to be attached. This is achieved with `--network host` for the `docker` command, or `network_mode: host` in compose files.
+
+## Config
+
 The config JSON lives in `/etc/upnp-service/upnp.json`. This file will need to be mounted or edited in the container. Here is a sample of the data required to run properly:
 
 ```JSON
