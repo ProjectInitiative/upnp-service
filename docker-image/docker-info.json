@@ -6,7 +6,10 @@
             "tags": [],
             "version": "0.2.0",
             "docker_registries": [
-            ]
+                "projectinitiative",
+                "ghcr.io/projectinitiative"
+            ],
+            "build_args": {}
         }
     ]
 }
