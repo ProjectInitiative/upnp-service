@@ -1,10 +1,48 @@
-version: 3.9'
+configs:
+  upnp_json:
+    content: |
+      {
+          "apps":
+          [
+              {
+                  "app_name": "first_whoami",
+                  "redirections": [
+                      ["8081","80","TCP"]
+                  ]
+              },
+              {
+                  "app_name": "second_whoami",
+                  "redirections": [
+                      ["8082","8080","TCP"]
+                  ]
+              },
+              {
+                  "app_name": "third_whoami",
+                  "redirections": [
+                      ["8083","TCP"]
+                  ]
+              }
+          ]
+      }
 services:
-  upnp:
-    container_name: projectinitiative/upnp-server
-    restart: always
-    network_mode: host  # works while the container runs
+  first_whoami:
+    image: traefik/whoami
+    ports:
+      - "8081:80"
+  second_whoami:
+    image: traefik/whoami
+    ports:
+      - "8082:80"
+  third_whoami:
+    image: traefik/whoami
+    ports:
+      - "8083:80"
+  upnp-service:
+    image: "projectinitiative/upnp-service:latest"
+    configs:
+      - source: upnp_json
+        target: /etc/upnp-service/upnp.json
+    network_mode: host # works while the container runs
     build:
       context: .
-      network: host  # works during the build if needed
-    
+      network: host # works during the build if needed
