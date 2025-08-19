@@ -4,6 +4,7 @@ update_upnp()
 {
     APP_NAME=$1
     shift
+    local REDIRECTIONS=""
     while (( "$#" )); do
         REDIRECTIONS="$REDIRECTIONS $1"
         shift
