@@ -55,6 +55,7 @@ jobs:
           tags: |
             type=raw,value=latest
             type=raw,value=${{ steps.tag_version.outputs.new_tag }}
+            type=semver,pattern={{version}},value=${{ steps.tag_version.outputs.new_version }}
             type=semver,pattern={{major}}.{{minor}},value=${{ steps.tag_version.outputs.new_version }}
             type=semver,pattern={{major}},value=${{ steps.tag_version.outputs.new_version }}
 
