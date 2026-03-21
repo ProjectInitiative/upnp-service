@@ -15,9 +15,9 @@ update_upnp()
     GATEWAY=$(ip route | head -1 | awk '{print $3}')
     printf '%s\n' "Detected gateway is [$GATEWAY]"
 
-    upnpc -e "$APP_NAME" -r $REDIRECTIONS
-
-    printf '%s\n' "Done updating UPnP entry with port redirections [$REDIRECTIONS]"
+    upnpc -z 1900 -e "$APP_NAME" -r $REDIRECTIONS \
+    && printf '%s\n' "Done updating UPnP entry with port redirections [$REDIRECTIONS]" \
+    || printf '%s\n' "Error updating UPnP entry with port redirections [$REDIRECTIONS]"
 }
 
 MASTER_CONFIG_DIR="/etc/upnp-service"
